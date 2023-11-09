@@ -301,7 +301,13 @@ ggml.o: ggml.c ggml.h ggml-cuda.h
 ggml-alloc.o: ggml-alloc.c ggml.h ggml-alloc.h
 	$(CC)  $(CFLAGS)   -c $< -o $@
 
-WHISPER_OBJ += ggml-alloc.o
+ggml-backend.o: ggml-backend.c ggml.h ggml-backend.h
+	$(CC)  $(CFLAGS)   -c $< -o $@
+
+ggml-quants.o: ggml-quants.c ggml.h ggml-quants.h
+	$(CC)  $(CFLAGS)   -c $< -o $@
+
+WHISPER_OBJ += ggml-alloc.o ggml-backend.o ggml-quants.o
 
 whisper.o: whisper.cpp whisper.h ggml.h ggml-cuda.h
 	$(CXX) $(CXXFLAGS) -c $< -o $@
@@ -411,9 +417,10 @@ samples:
 .PHONY: medium.en
 .PHONY: medium
 .PHONY: large-v1
+.PHONY: large-v2
 .PHONY: large
 
-tiny.en tiny base.en base small.en small medium.en medium large-v1 large: main
+tiny.en tiny base.en base small.en small medium.en medium large-v1 large-v2 large: main
 	bash ./models/download-ggml-model.sh $@
 	@echo ""
 	@echo "==============================================="
